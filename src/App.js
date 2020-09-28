@@ -74,7 +74,8 @@ class App extends React.Component {
                     artist.albums.push({
                         name: name,
                         releaseDate: new Date(releaseDate),
-                        duration: duration
+                        duration: duration,
+                        titles: []
                     });
                 }
 
