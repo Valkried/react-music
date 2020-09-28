@@ -23,15 +23,15 @@ class AddArtistForm extends React.Component {
 
     render() {
         return(
-            <form id="add-artist-form" onSubmit={this.handleSubmit}>
+            <form className="add-form" onSubmit={this.handleSubmit}>
                 <div>
                     <div className="input-field">
-                        <label htmlFor="name">Nom de l'artiste :</label>
+                        <label htmlFor="name">Nom :</label>
                         <input type="text" id="name" name="name" value={this.state.name} onChange={this.handleChange} />
                     </div>
 
                     <div className="input-field">
-                        <label htmlFor="description">Description de l'artiste :</label>
+                        <label htmlFor="description">Description :</label>
                         <input type="text" id="description" name="description" value={this.state.description} onChange={this.handleChange} />
                     </div>
                 </div>

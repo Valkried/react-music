@@ -1,6 +1,7 @@
 import React from 'react';
 import Artist from "./Artist";
 import AddArtistForm from "./AddArtistForm";
+import AddAlbumForm from "./AddAlbumForm";
 
 class App extends React.Component {
     state = {
@@ -8,7 +9,26 @@ class App extends React.Component {
             {
                 name: 'Artiste 1',
                 description: 'Lorem ipsum',
-                albums: []
+                albums: [
+                    {
+                        name: 'Album 1',
+                        releaseDate: new Date(),
+                        duration: 35,
+                        titles: []
+                    },
+                    {
+                        name: 'Album 2',
+                        releaseDate: new Date(),
+                        duration: 64,
+                        titles: []
+                    },
+                    {
+                        name: 'Album 3',
+                        releaseDate: new Date(),
+                        duration: 42,
+                        titles: []
+                    }
+                ]
             },
             {
                 name: 'Artiste 2',
@@ -21,7 +41,9 @@ class App extends React.Component {
                 albums: []
             }
         ],
-        displayAddArtistForm: false
+        displayAddArtistForm: false,
+        displayAddAlbumForm: false,
+        editedArtist: {}
     }
 
     addArtist = (name, description) => {
@@ -39,6 +61,42 @@ class App extends React.Component {
         this.setState({artists: [...this.state.artists].filter(artist => artist !== artisttoDelete)});
     }
 
+    toggleAddAlbumForm = (artist) => {
+        this.setState({ editedArtist: this.state.editedArtist.hasOwnProperty('name') ? {} : artist }, () => {
+            this.setState({displayAddAlbumForm: !this.state.displayAddAlbumForm});
+        });
+    }
+
+    addAlbum = (name, releaseDate, duration, editedArtist) => {
+        this.setState({
+            artists: [...this.state.artists].map(artist => {
+                if (artist === editedArtist) {
+                    artist.albums.push({
+                        name: name,
+                        releaseDate: new Date(releaseDate),
+                        duration: duration
+                    });
+                }
+
+                return artist;
+            })
+        }, () => {
+            this.toggleAddAlbumForm(editedArtist);
+        });
+    }
+
+    deleteAlbum = (albumToDelete, editedArtist) => {
+        this.setState({
+            artists: [...this.state.artists].map(artist => {
+                if (artist === editedArtist) {
+                    artist.albums = artist.albums.filter(album => album !== albumToDelete);
+                }
+
+                return artist;
+            })
+        });
+    }
+
     render() {
         return (
             <div>
@@ -47,10 +105,8 @@ class App extends React.Component {
                 </header>
 
                 <main>
-                    {
-                        this.state.displayAddArtistForm &&
-                            <AddArtistForm addArtist={this.addArtist} />
-                    }
+                    { this.state.displayAddArtistForm && <AddArtistForm addArtist={this.addArtist} /> }
+                    { this.state.displayAddAlbumForm && <AddAlbumForm addAlbum={this.addAlbum} artist={this.state.editedArtist} /> }
 
                     <section id="artists">
                         <ul>
@@ -60,7 +116,10 @@ class App extends React.Component {
                                         <Artist
                                             artist={artist}
                                             key={index}
-                                            onClick={() => {this.deleteArtist(artist)}}
+                                            deleteArtist={() => {this.deleteArtist(artist)}}
+                                            addAlbum={this.addAlbum}
+                                            toggleAddAlbumForm={this.toggleAddAlbumForm}
+                                            deleteAlbum={this.deleteAlbum}
                                         />
                                     );
                                 })
